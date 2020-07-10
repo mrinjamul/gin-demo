@@ -15,6 +15,7 @@ type Article interface {
 	FindAll(ctx *gin.Context)
 	Add(ctx *gin.Context)
 	Detail(ctx *gin.Context)
+	Update(ctx *gin.Context)
 }
 
 type article struct {
@@ -60,6 +61,32 @@ func (svc *article) Detail(ctx *gin.Context) {
 	}
 
 	article, err = svc.articleRepo.Detail(ctx, article)
+
+	ctx.JSON(200, gin.H{
+		"message": "Success",
+		"article": article,
+	})
+}
+
+func (svc *article) Update(ctx *gin.Context) {
+	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	bytes, err := ioutil.ReadAll(ctx.Request.Body)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	var article models.Article
+	err = json.Unmarshal(bytes, &article)
+	if err != nil {
+		log.Fatal(err)
+	}
+	article.ID = id
+	svc.articleRepo.Update(ctx, &article)
 
 	ctx.JSON(200, gin.H{
 		"message": "Success",

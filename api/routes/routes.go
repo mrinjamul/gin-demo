@@ -20,4 +20,8 @@ func InitRoutes(server *gin.Engine, db *config.Database) {
 	server.GET("/articles/:id", func(c *gin.Context) {
 		svc.ArticleService().Detail(c)
 	})
+
+	server.PATCH("/articles/:id", func(c *gin.Context) {
+		svc.ArticleService().Update(c)
+	})
 }
