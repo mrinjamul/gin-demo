@@ -1,8 +1,12 @@
 package controllers
 
 import (
+	"encoding/json"
 	"gin-demo/models"
 	"gin-demo/repository"
+	"io/ioutil"
+	"log"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,6 +14,7 @@ import (
 type Article interface {
 	FindAll(ctx *gin.Context)
 	Add(ctx *gin.Context)
+	Detail(ctx *gin.Context)
 }
 
 type article struct {
@@ -26,12 +31,35 @@ func (svc *article) FindAll(ctx *gin.Context) {
 }
 
 func (svc *article) Add(ctx *gin.Context) {
-	article := models.Article{
-		ID:          1,
-		Title:       "My title",
-		Description: "My Description",
+	bytes, err := ioutil.ReadAll(ctx.Request.Body)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	var article models.Article
+	err = json.Unmarshal(bytes, &article)
+	if err != nil {
+		log.Fatal(err)
 	}
 	svc.articleRepo.Add(ctx, &article)
+
+	ctx.JSON(200, gin.H{
+		"message": "Success",
+		"article": article,
+	})
+}
+
+func (svc *article) Detail(ctx *gin.Context) {
+	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	article := models.Article{
+		ID: id,
+	}
+
+	article, err = svc.articleRepo.Detail(ctx, article)
 
 	ctx.JSON(200, gin.H{
 		"message": "Success",

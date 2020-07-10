@@ -9,11 +9,15 @@ import (
 
 func InitRoutes(server *gin.Engine, db *config.Database) {
 	svc := services.NewServices(db)
-	server.GET("/", func(c *gin.Context) {
+	server.GET("/articles", func(c *gin.Context) {
 		svc.ArticleService().FindAll(c)
 	})
 
-	server.GET("/add", func(c *gin.Context) {
+	server.POST("/articles", func(c *gin.Context) {
 		svc.ArticleService().Add(c)
+	})
+
+	server.GET("/articles/:id", func(c *gin.Context) {
+		svc.ArticleService().Detail(c)
 	})
 }
