@@ -24,4 +24,8 @@ func InitRoutes(server *gin.Engine, db *config.Database) {
 	server.PATCH("/articles/:id", func(c *gin.Context) {
 		svc.ArticleService().Update(c)
 	})
+
+	server.DELETE("/articles/:id", func(c *gin.Context) {
+		svc.ArticleService().Delete(c)
+	})
 }

@@ -12,6 +12,7 @@ type ArticleRepo interface {
 	FindAll(ctx *gin.Context) ([]models.Article, error)
 	Detail(ctx *gin.Context, article models.Article) (models.Article, error)
 	Update(ctx *gin.Context, article *models.Article) error
+	Delete(ctx *gin.Context, article *models.Article) error
 }
 
 type articleRepo struct {
@@ -72,6 +73,25 @@ func (repo *articleRepo) Update(ctx *gin.Context, article *models.Article) error
 	}
 	articles[index] = oldArticle
 	repo.db.Articles = articles
+	article = &oldArticle
+	return nil
+}
+
+func (repo *articleRepo) Delete(ctx *gin.Context, article *models.Article) error {
+
+	articles := repo.db.Articles
+	var index int
+	var oldArticle models.Article
+
+	for i, a := range articles {
+		if a.ID == article.ID {
+			oldArticle = a
+			index = i
+			break
+		}
+	}
+
+	repo.db.Articles = append(articles[:index], articles[index+1:]...)
 	article = &oldArticle
 	return nil
 }

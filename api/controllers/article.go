@@ -11,11 +11,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Article has operations
 type Article interface {
 	FindAll(ctx *gin.Context)
 	Add(ctx *gin.Context)
 	Detail(ctx *gin.Context)
 	Update(ctx *gin.Context)
+	Delete(ctx *gin.Context)
 }
 
 type article struct {
@@ -94,6 +96,25 @@ func (svc *article) Update(ctx *gin.Context) {
 	})
 }
 
+func (svc *article) Delete(ctx *gin.Context) {
+	id, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	article := models.Article{
+		ID: id,
+	}
+
+	svc.articleRepo.Delete(ctx, &article)
+
+	ctx.JSON(200, gin.H{
+		"message": "Success",
+		"article": article,
+	})
+}
+
+// NewArticle new article
 func NewArticle(
 	articleRepo repository.ArticleRepo,
 ) Article {
