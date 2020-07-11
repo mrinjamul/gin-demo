@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"gin-demo/models"
 	"log"
 
@@ -48,15 +49,22 @@ func (repo *articleRepo) Detail(ctx *gin.Context, article models.Article) (model
 
 func (repo *articleRepo) Update(ctx *gin.Context, article *models.Article) error {
 
-	// qs := repo.db.QueryTable(new(models.Article))
-	// qs = qs.Filter("id", article.ID)
+	var column []string
+	if len(article.Title) > 0 {
+		column = append(column, "title")
+	}
+	if len(article.Description) > 0 {
+		column = append(column, "description")
+	}
+	if len(column) == 0 {
+		return errors.New("No changes found")
+	}
+	_, err := repo.db.Update(article, column...)
 
-	// if len(article.Title) > 0 {
-	// 	qs.Update(article.Title, "Title")
-	// }
-	// if len(article.Description) > 0 {
-	// 	qs.Update(article.Description)
-	// }
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
 
 	return nil
 }
