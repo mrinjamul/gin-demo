@@ -34,12 +34,14 @@ func (repo *articleRepo) Detail(ctx *gin.Context, article models.Article) (model
 
 	var res models.Article
 
-	// for _, a := range repo.db.Articles {
-	// 	if a.ID == article.ID {
-	// 		res = a
-	// 		break
-	// 	}
-	// }
+	qs := repo.db.QueryTable(new(models.Article))
+	qs = qs.Filter("id", article.ID)
+
+	err := qs.One(&res)
+	if err != nil {
+		log.Fatal(err)
+		return res, err
+	}
 
 	return res, nil
 }
