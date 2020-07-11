@@ -48,56 +48,33 @@ func (repo *articleRepo) Detail(ctx *gin.Context, article models.Article) (model
 
 func (repo *articleRepo) Update(ctx *gin.Context, article *models.Article) error {
 
-	// articles := repo.db.Articles
-
-	// var index int
-
-	// var oldArticle models.Article
-
-	// for i, a := range articles {
-	// 	if a.ID == article.ID {
-	// 		oldArticle = a
-	// 		index = i
-	// 		break
-	// 	}
-	// }
+	// qs := repo.db.QueryTable(new(models.Article))
+	// qs = qs.Filter("id", article.ID)
 
 	// if len(article.Title) > 0 {
-	// 	oldArticle.Title = article.Title
+	// 	qs.Update(article.Title, "Title")
 	// }
 	// if len(article.Description) > 0 {
-	// 	oldArticle.Description = article.Description
+	// 	qs.Update(article.Description)
 	// }
-	// articles[index] = oldArticle
-	// repo.db.Articles = articles
-	// article = &oldArticle
+
 	return nil
 }
 
 func (repo *articleRepo) Delete(ctx *gin.Context, article *models.Article) error {
 
-	// articles := repo.db.Articles
-	// var index int
-	// var oldArticle models.Article
+	qs := repo.db.QueryTable(new(models.Article))
+	qs = qs.Filter("id", article.ID)
 
-	// for i, a := range articles {
-	// 	if a.ID == article.ID {
-	// 		oldArticle = a
-	// 		index = i
-	// 		break
-	// 	}
-	// }
-
-	// repo.db.Articles = append(articles[:index], articles[index+1:]...)
-	// article = &oldArticle
+	_, err := qs.Delete()
+	if err != nil {
+		log.Fatal(err)
+		return err
+	}
 	return nil
 }
 
 func (repo *articleRepo) FindAll(ctx *gin.Context) ([]models.Article, error) {
-
-	// articles := repo.db.Articles
-
-	// return articles, nil
 
 	qs := repo.db.QueryTable(new(models.Article))
 	var articles []models.Article
