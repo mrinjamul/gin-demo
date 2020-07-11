@@ -2,13 +2,12 @@ package routes
 
 import (
 	"gin-demo/api/services"
-	"gin-demo/config"
 
 	"github.com/gin-gonic/gin"
 )
 
-func InitRoutes(server *gin.Engine, db *config.Database) {
-	svc := services.NewServices(db)
+func InitRoutes(server *gin.Engine) {
+	svc := services.NewServices()
 	server.GET("/articles", func(c *gin.Context) {
 		svc.ArticleService().FindAll(c)
 	})

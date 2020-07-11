@@ -20,7 +20,8 @@ func (svc *services) ArticleService() controllers.Article {
 }
 
 // NewServices initializes service
-func NewServices(db *config.Database) Services {
+func NewServices() Services {
+	db := config.GetDB()
 	return &services{
 		article: controllers.NewArticle(
 			repository.NewArticleRepo(db),

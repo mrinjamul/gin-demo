@@ -1,18 +1,19 @@
 package config
 
-import "gin-demo/models"
+import (
+	"github.com/astaxie/beego/orm"
+)
 
-type Database struct {
-	Articles []models.Article
-}
-
-var db Database
+var db orm.Ormer
 
 // GetDB retuns database
-func GetDB() *Database {
-	var articles []models.Article
-	db = Database{
-		Articles: articles,
+func GetDB() orm.Ormer {
+	if db == nil {
+		orm.RegisterDriver("mysql", orm.DRMySQL)
+		orm.RegisterDataBase("default", "mysql", "root:admin@/gin_demo?charset=utf8")
+		orm.RunSyncdb("default", false, true)
+		db = orm.NewOrm()
+		db.Using("default")
 	}
-	return &db
+	return db
 }
