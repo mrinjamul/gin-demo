@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/astaxie/beego/orm"
 )
@@ -39,7 +40,10 @@ func GetDB() orm.Ormer {
 			dbPort = "3306"
 		}
 		orm.RegisterDriver("mysql", orm.DRMySQL)
-		orm.RegisterDataBase("default", "mysql", "root:admin@/gin_demo?charset=utf8")
+		// DefaultTimeLoc is for timezone it's not mandatory for database connection
+		orm.DefaultTimeLoc = time.UTC
+		// For mysql need to add network type (tcp/unix) for remote connection must use tcp
+		orm.RegisterDataBase("default", "mysql", dbUser+":"+dbPassword+"@tcp("+dbHost+":"+dbPort+")/"+dbName+"?charset=utf8")
 		orm.RunSyncdb("default", false, true)
 		db = orm.NewOrm()
 		db.Using("default")
