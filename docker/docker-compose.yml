@@ -1,0 +1,33 @@
+version: "3"
+services:
+  web-gin-demo:
+    networks:
+      - gin-demo
+    build: .
+    container_name: gin-demo
+    security_opt:
+      - seccomp:unconfined
+    env_file: .env
+    ports:
+      - "3001:3000"
+    volumes:
+      - "../:/go/src/app"
+    depends_on:
+      - db-gin-demo
+
+  db-gin-demo:
+    networks:
+      - gin-demo
+    image: mysql 
+    container_name: mysql-gin-demo
+    ports:
+      - "3306:3306"
+    env_file: .env
+    volumes:
+        - db-data-gin-demo:/var/lib/mysql/
+
+volumes:
+  db-data-gin-demo:
+
+networks:
+  gin-demo:
