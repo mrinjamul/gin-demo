@@ -18,16 +18,16 @@ services:
   db-gin-demo:
     networks:
       - gin-demo
-    image: mysql 
-    container_name: mysql-gin-demo
+    image: postgres:12
+    container_name: postgres-gin-demo
     ports:
-      - "3306:3306"
+      - "5434:5432"
     env_file: .env
     volumes:
-        - db-data-gin-demo:/var/lib/mysql/
+        - db-gin-demo-data:/var/lib/postgresql/data/
 
 volumes:
-  db-data-gin-demo:
+  db-gin-demo-data:
 
 networks:
   gin-demo:
