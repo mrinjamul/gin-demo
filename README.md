@@ -15,6 +15,7 @@ go mod tidy
 Copy `docker/.env.sample` to `docker/.env` and write environment details. Then export using this command.
 
 ```sh
+cp docker/.env{.sample,}
 export $(cat docker/.env | xargs)
 ```
 
