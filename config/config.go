@@ -10,14 +10,14 @@ import (
 
 var db orm.Ormer
 
-// GetDB retuns database
+// GetDb : It will returns orm object
 func GetDB() orm.Ormer {
 	if db == nil {
-		dbHost := os.Getenv("MYSQL_ROOT_HOST")
-		dbName := os.Getenv("MYSQL_DATABASE")
-		dbUser := os.Getenv("MYSQL_USER")
-		dbPassword := os.Getenv("MYSQL_PASSWORD")
-		dbPort := os.Getenv("MYSQL_PORT")
+		dbHost := os.Getenv("POSTGRES_HOST")
+		dbName := os.Getenv("POSTGRES_DB")
+		dbUser := os.Getenv("POSTGRES_USER")
+		dbPassword := os.Getenv("POSTGRES_PASSWORD")
+		dbPort := os.Getenv("POSTGRES_PORT")
 
 		if dbHost == "" {
 			fmt.Println("Environment variable DB_HOST is null.")
@@ -37,16 +37,19 @@ func GetDB() orm.Ormer {
 		}
 
 		if dbPort == "" {
-			dbPort = "3306"
+			dbPort = "5432"
 		}
-		orm.RegisterDriver("mysql", orm.DRMySQL)
-		// DefaultTimeLoc is for timezone it's not mandatory for database connection
+
+		orm.RegisterDriver("postgres", orm.DRPostgres)
 		orm.DefaultTimeLoc = time.UTC
-		// For mysql need to add network type (tcp/unix) for remote connection must use tcp
-		orm.RegisterDataBase("default", "mysql", dbUser+":"+dbPassword+"@tcp("+dbHost+":"+dbPort+")/"+dbName+"?charset=utf8")
+		orm.RegisterDataBase("default", "postgres", "postgres://"+dbUser+":"+dbPassword+"@"+dbHost+":"+dbPort+"/"+dbName+"?sslmode=disable")
+
+		// This is for auto generating tables
 		orm.RunSyncdb("default", false, true)
+
 		db = orm.NewOrm()
 		db.Using("default")
+
 	}
 	return db
 }
